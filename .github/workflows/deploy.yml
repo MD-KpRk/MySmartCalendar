@@ -47,6 +47,17 @@ jobs:
             docker compose down
             docker compose up --build -d --remove-orphans
 
+            # Ожидаем готовности PostgreSQL
+            echo "Ожидание запуска PostgreSQL..."
+            for i in {1..15}; do
+              if docker compose exec -T postgres pg_isready -U ${{ secrets.DB_USER || 'postgres' }}; then
+                echo "PostgreSQL готов!"
+                break
+              fi
+              echo "PostgreSQL еще не готов, ждем 2 секунды..."
+              sleep 2
+            done
+
             # Применяем миграции БД внутри контейнера приложения
             docker compose exec -T app npx prisma migrate deploy
             
