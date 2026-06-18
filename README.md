@@ -78,10 +78,10 @@ docker compose up postgres redis -d
    ```
 
 ### Настройка Caddy на VPS
-Добавьте в ваш `Caddyfile` проксирование на порт приложения `3005`:
+Добавьте в ваш `Caddyfile` проксирование на порт приложения `3006`:
 ```caddy
 calendar.yourdomain.com {
-    reverse_proxy localhost:3005
+    reverse_proxy localhost:3006
 }
 ```
 Caddy автоматически сгенерирует SSL-сертификаты.
