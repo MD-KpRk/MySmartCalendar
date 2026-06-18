@@ -32,6 +32,36 @@ interface Task {
   tags: string[];
 }
 
+export interface CalendarEvent {
+  id: number;
+  userId: number;
+  title: string;
+  description?: string | null;
+  location?: string | null;
+  startAt: string;
+  endAt?: string | null;
+  allDay: boolean;
+  color?: string | null;
+  recurrence?: any;
+}
+
+export interface ShiftTimeRange {
+  start: string;
+  end: string;
+}
+
+export type ShiftTimes = Record<'DAY' | 'NIGHT' | 'SLEEP' | 'OFF', ShiftTimeRange>;
+
+const DEFAULT_SHIFT_TIMES: ShiftTimes = {
+  DAY: { start: '08:00', end: '20:00' },
+  NIGHT: { start: '20:00', end: '08:00' },
+  SLEEP: { start: '00:00', end: '00:00' },
+  OFF: { start: '00:00', end: '00:00' },
+};
+
+const savedShiftTimes = localStorage.getItem('shiftTimes');
+const initialShiftTimes: ShiftTimes = savedShiftTimes ? JSON.parse(savedShiftTimes) : DEFAULT_SHIFT_TIMES;
+
 interface AppState {
   user: User | null;
   token: string | null;
@@ -42,6 +72,8 @@ interface AppState {
   // Ключ: 'YYYY-MM'
   schedules: Record<string, MonthlySchedule>;
   tasks: Task[];
+  events: CalendarEvent[];
+  shiftTimes: ShiftTimes;
   
   // Действия
   loginWithTelegram: (initDataRaw: string) => Promise<boolean>;
@@ -53,6 +85,23 @@ interface AppState {
   createTask: (title: string, description?: string, deadline?: string, priority?: string) => Promise<void>;
   updateTask: (id: number, data: Partial<Task>) => Promise<void>;
   deleteTask: (id: number) => Promise<void>;
+  
+  // События
+  fetchEvents: () => Promise<void>;
+  createEvent: (data: {
+    title: string;
+    description?: string;
+    startAt: string;
+    endAt?: string;
+    allDay?: boolean;
+    color?: string;
+  }) => Promise<void>;
+  updateEvent: (id: number, data: Partial<CalendarEvent>) => Promise<void>;
+  deleteEvent: (id: number) => Promise<void>;
+  
+  // Настройки смен
+  updateShiftTimes: (times: ShiftTimes) => void;
+  
   logout: () => void;
 }
 
@@ -64,6 +113,8 @@ export const useStore = create<AppState>((set) => ({
   error: null,
   schedules: {},
   tasks: [],
+  events: [],
+  shiftTimes: initialShiftTimes,
 
   loginWithTelegram: async (initDataRaw: string) => {
     set({ isLoading: true, error: null });
@@ -239,8 +290,61 @@ export const useStore = create<AppState>((set) => ({
     }
   },
 
+  // Работа с событиями (почасовыми)
+  fetchEvents: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await client.get('/api/events');
+      set({ events: response.data, isLoading: false });
+    } catch (err: any) {
+      set({ error: err.response?.data?.error || 'Ошибка при загрузке событий', isLoading: false });
+    }
+  },
+
+  createEvent: async (data) => {
+    set({ error: null });
+    try {
+      const response = await client.post('/api/events', data);
+      set((state) => ({
+        events: [...state.events, response.data]
+      }));
+    } catch (err: any) {
+      set({ error: err.response?.data?.error || 'Ошибка при создании события' });
+    }
+  },
+
+  updateEvent: async (id, data) => {
+    set({ error: null });
+    try {
+      const response = await client.put(`/api/events/${id}`, data);
+      set((state) => ({
+        events: state.events.map((e) => (e.id === id ? response.data : e))
+      }));
+    } catch (err: any) {
+      set({ error: err.response?.data?.error || 'Ошибка при обновлении события' });
+    }
+  },
+
+  deleteEvent: async (id) => {
+    set({ error: null });
+    try {
+      await client.delete(`/api/events/${id}`);
+      set((state) => ({
+        events: state.events.filter((e) => e.id !== id)
+      }));
+    } catch (err: any) {
+      set({ error: err.response?.data?.error || 'Ошибка при удалении события' });
+    }
+  },
+
+  // Обновление настроек смен
+  updateShiftTimes: (times) => {
+    localStorage.setItem('shiftTimes', JSON.stringify(times));
+    set({ shiftTimes: times });
+  },
+
   logout: () => {
     localStorage.removeItem('token');
-    set({ user: null, token: null, isAuthenticated: false, schedules: {}, tasks: [] });
+    set({ user: null, token: null, isAuthenticated: false, schedules: {}, tasks: [], events: [] });
   }
 }));
