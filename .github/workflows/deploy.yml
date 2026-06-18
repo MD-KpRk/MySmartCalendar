@@ -1,0 +1,53 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            # Переходим в директорию с проектом
+            cd /var/www/mysmartcalendar || mkdir -p /var/www/mysmartcalendar && cd /var/www/mysmartcalendar
+            
+            # Если папка была пустой, клонируем репозиторий, иначе пуллим изменения
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git pull origin ${{ github.ref_name }}
+            fi
+
+            # Создаем .env файл для докера на основе секретов GitHub
+            cat << EOF > .env
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+            TMA_URL=${{ secrets.TMA_URL }}
+            EOF
+
+            # Пересобираем и запускаем контейнеры
+            docker compose down
+            docker compose up --build -d --remove-orphans
+
+            # Применяем миграции БД внутри контейнера приложения
+            docker compose exec -T app npx prisma migrate deploy
+            
+            echo "Деплой успешно завершен!"
