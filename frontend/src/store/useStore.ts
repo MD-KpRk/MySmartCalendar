@@ -46,6 +46,7 @@ interface AppState {
   // Действия
   loginWithTelegram: (initDataRaw: string) => Promise<boolean>;
   fetchMonthlySchedule: (year: number, month: number) => Promise<void>;
+  fetchYearlySchedules: (year: number) => Promise<void>;
   updateDayShift: (year: number, month: number, date: string, shiftType: string, note?: string) => Promise<void>;
   confirmMonthlySchedule: (year: number, month: number) => Promise<void>;
   fetchTasks: () => Promise<void>;
@@ -99,6 +100,38 @@ export const useStore = create<AppState>((set) => ({
       }));
     } catch (err: any) {
       set({ error: err.response?.data?.error || 'Ошибка при загрузке графика смен', isLoading: false });
+    }
+  },
+
+  fetchYearlySchedules: async (year: number) => {
+    set({ isLoading: true, error: null });
+    try {
+      const promises = Array.from({ length: 12 }, (_, i) => {
+        const month = i + 1;
+        return client.get(`/api/shifts/monthly/${year}/${month}`).then(res => ({
+          month,
+          data: res.data
+        }));
+      });
+      
+      const results = await Promise.all(promises);
+      
+      set((state) => {
+        const newSchedules = { ...state.schedules };
+        results.forEach(({ month, data }) => {
+          const key = `${year}-${String(month).padStart(2, '0')}`;
+          newSchedules[key] = data;
+        });
+        return {
+          schedules: newSchedules,
+          isLoading: false
+        };
+      });
+    } catch (err: any) {
+      set({
+        error: err.response?.data?.error || 'Ошибка при загрузке годового графика',
+        isLoading: false
+      });
     }
   },
 
