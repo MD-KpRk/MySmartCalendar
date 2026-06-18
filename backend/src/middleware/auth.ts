@@ -33,8 +33,8 @@ export function verifyTelegramInitData(initDataRaw: string): { isValid: boolean;
       return { isValid: false };
     }
 
-    // Собираем все параметры, кроме hash, сортируем по алфавиту
-    const keys = Array.from(params.keys()).filter((key) => key !== 'hash');
+    // Собираем все параметры, кроме hash и signature, сортируем по алфавиту
+    const keys = Array.from(params.keys()).filter((key) => key !== 'hash' && key !== 'signature');
     keys.sort();
 
     const dataCheckString = keys
