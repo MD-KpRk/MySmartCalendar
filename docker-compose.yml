@@ -25,6 +25,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: mysmartcalendar-postgres
+    ports:
+      - "5435:5432"
     environment:
       - POSTGRES_USER=${DB_USER:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
@@ -36,6 +38,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: mysmartcalendar-redis
+    ports:
+      - "6379:6379"
     volumes:
       - redisdata:/data
     command: redis-server --appendonly yes

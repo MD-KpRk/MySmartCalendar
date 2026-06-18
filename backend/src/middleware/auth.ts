@@ -28,6 +28,17 @@ export function verifyTelegramInitData(initDataRaw: string): { isValid: boolean;
   try {
     const params = new URLSearchParams(initDataRaw);
     const hash = params.get('hash');
+
+    // В режиме разработки разрешаем моковый хэш от локального клиента
+    if (process.env.NODE_ENV === 'development' && hash === 'mock_hash') {
+      console.warn('ВНИМАНИЕ: Локальная разработка. Проверка подписи Telegram пропущена.');
+      const userStr = params.get('user');
+      return {
+        isValid: true,
+        user: userStr ? JSON.parse(userStr) : { id: 12345, first_name: 'DevUser', username: 'dev_user' }
+      };
+    }
+
     if (!hash) {
       console.error('Ошибка верификации: отсутствуют параметры или hash в initDataRaw');
       return { isValid: false };
