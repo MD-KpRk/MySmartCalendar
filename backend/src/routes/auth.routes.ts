@@ -89,9 +89,13 @@ router.post('/telegram', async (req: any, res: Response) => {
         shifts: dbUser.shifts
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Ошибка авторизации пользователя:', error);
-    return res.status(500).json({ error: 'Внутренняя ошибка сервера при авторизации' });
+    return res.status(500).json({ 
+      error: 'Внутренняя ошибка сервера при авторизации',
+      message: error.message,
+      stack: error.stack
+    });
   }
 });
 
