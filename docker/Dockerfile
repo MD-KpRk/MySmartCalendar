@@ -23,6 +23,9 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+# Устанавливаем системные зависимости для корректного определения OpenSSL 3.0 в Prisma
+RUN apk add --no-cache openssl libc6-compat
+
 ENV NODE_ENV=production
 ENV PORT=3000
 
