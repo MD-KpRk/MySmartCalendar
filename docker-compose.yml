@@ -7,7 +7,7 @@ services:
       dockerfile: docker/Dockerfile
     container_name: mysmartcalendar-app
     ports:
-      - "3000:3000"
+      - "3005:3000"
     environment:
       - PORT=3000
       - NODE_ENV=production
