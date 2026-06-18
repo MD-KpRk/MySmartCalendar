@@ -16,10 +16,7 @@ COPY backend/package*.json ./
 RUN npm install
 
 COPY backend/ ./
-# Копируем схему Prisma и генерируем клиент
 RUN npx prisma generate
-
-# Компилируем TypeScript
 RUN npm run build
 
 # --- STAGE 3: Final Production Image ---
@@ -29,16 +26,16 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Устанавливаем только prod зависимости для бэкенда
+# Копируем package.json и устанавливаем prod зависимости
 COPY backend/package*.json ./
 RUN npm install --only=production
 
+# Копируем схему Prisma и генерируем клиент прямо в финальном образе
+COPY backend/prisma ./prisma
+RUN npx prisma generate
+
 # Копируем скомпилированный бэкенд
 COPY --from=backend-builder /app/backend/dist ./dist
-# Копируем Prisma Client (он находится внутри node_modules)
-COPY --from=backend-builder /app/backend/node_modules/.prisma ./node_modules/.prisma
-COPY --from=backend-builder /app/backend/node_modules/@prisma/client ./node_modules/@prisma/client
-COPY --from=backend-builder /app/backend/prisma ./prisma
 
 # Копируем собранный статический фронтенд в папку public бэкенда
 COPY --from=frontend-builder /app/backend/public ./public
