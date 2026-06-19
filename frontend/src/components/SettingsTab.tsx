@@ -19,15 +19,26 @@ export default function SettingsTab() {
   const [pattern, setPattern] = useState<string[]>(['DAY', 'NIGHT', 'SLEEP', 'OFF']);
   const [startDate, setStartDate] = useState('');
   
-  // Времена смен
+  // Времена смен и часы сна для каждой смены
   const [dayStart, setDayStart] = useState(shiftTimes.DAY.start);
   const [dayEnd, setDayEnd] = useState(shiftTimes.DAY.end);
+  const [daySleepStart, setDaySleepStart] = useState(shiftTimes.DAY.sleepStart || '23:00');
+  const [daySleepEnd, setDaySleepEnd] = useState(shiftTimes.DAY.sleepEnd || '07:00');
+
   const [nightStart, setNightStart] = useState(shiftTimes.NIGHT.start);
   const [nightEnd, setNightEnd] = useState(shiftTimes.NIGHT.end);
+  const [nightSleepStart, setNightSleepStart] = useState(shiftTimes.NIGHT.sleepStart || '09:00');
+  const [nightSleepEnd, setNightSleepEnd] = useState(shiftTimes.NIGHT.sleepEnd || '17:00');
+
   const [sleepStart, setSleepStart] = useState(shiftTimes.SLEEP.start);
   const [sleepEnd, setSleepEnd] = useState(shiftTimes.SLEEP.end);
+  const [sleepSleepStart, setSleepSleepStart] = useState(shiftTimes.SLEEP.sleepStart || '23:00');
+  const [sleepSleepEnd, setSleepSleepEnd] = useState(shiftTimes.SLEEP.sleepEnd || '07:00');
+
   const [offStart, setOffStart] = useState(shiftTimes.OFF.start);
   const [offEnd, setOffEnd] = useState(shiftTimes.OFF.end);
+  const [offSleepStart, setOffSleepStart] = useState(shiftTimes.OFF.sleepStart || '23:00');
+  const [offSleepEnd, setOffSleepEnd] = useState(shiftTimes.OFF.sleepEnd || '07:00');
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -55,12 +66,23 @@ export default function SettingsTab() {
   useEffect(() => {
     setDayStart(shiftTimes.DAY.start);
     setDayEnd(shiftTimes.DAY.end);
+    setDaySleepStart(shiftTimes.DAY.sleepStart || '23:00');
+    setDaySleepEnd(shiftTimes.DAY.sleepEnd || '07:00');
+
     setNightStart(shiftTimes.NIGHT.start);
     setNightEnd(shiftTimes.NIGHT.end);
+    setNightSleepStart(shiftTimes.NIGHT.sleepStart || '09:00');
+    setNightSleepEnd(shiftTimes.NIGHT.sleepEnd || '17:00');
+
     setSleepStart(shiftTimes.SLEEP.start);
     setSleepEnd(shiftTimes.SLEEP.end);
+    setSleepSleepStart(shiftTimes.SLEEP.sleepStart || '23:00');
+    setSleepSleepEnd(shiftTimes.SLEEP.sleepEnd || '07:00');
+
     setOffStart(shiftTimes.OFF.start);
     setOffEnd(shiftTimes.OFF.end);
+    setOffSleepStart(shiftTimes.OFF.sleepStart || '23:00');
+    setOffSleepEnd(shiftTimes.OFF.sleepEnd || '07:00');
   }, [shiftTimes]);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -80,12 +102,12 @@ export default function SettingsTab() {
         startDate
       });
 
-      // Сохраняем временные диапазоны смен
+      // Сохраняем временные диапазоны смен и их сон
       updateShiftTimes({
-        DAY: { start: dayStart, end: dayEnd },
-        NIGHT: { start: nightStart, end: nightEnd },
-        SLEEP: { start: sleepStart, end: sleepEnd },
-        OFF: { start: offStart, end: offEnd }
+        DAY: { start: dayStart, end: dayEnd, sleepStart: daySleepStart, sleepEnd: daySleepEnd },
+        NIGHT: { start: nightStart, end: nightEnd, sleepStart: nightSleepStart, sleepEnd: nightSleepEnd },
+        SLEEP: { start: sleepStart, end: sleepEnd, sleepStart: sleepSleepStart, sleepEnd: sleepSleepEnd },
+        OFF: { start: offStart, end: offEnd, sleepStart: offSleepStart, sleepEnd: offSleepEnd }
       });
 
       setSaveSuccess(true);
@@ -143,96 +165,184 @@ export default function SettingsTab() {
                 Диапазон времени для смен:
               </label>
 
-              <div className="space-y-3 bg-white p-3 rounded-lg border border-neutral-200">
+              <div className="space-y-4 bg-white p-3 rounded-lg border border-neutral-200 divide-y divide-neutral-100">
                 {/* День */}
-                <div className="grid grid-cols-3 items-center gap-2">
-                  <span className="text-xs text-tg-text font-bold">День (DAY)</span>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало</span>
-                    <input
-                      type="time"
-                      value={dayStart}
-                      onChange={(e) => setDayStart(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                <div className="space-y-2 pb-3">
+                  <div className="text-xs text-tg-text font-bold">День (DAY)</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало смены</span>
+                      <input
+                        type="time"
+                        value={dayStart}
+                        onChange={(e) => setDayStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец смены</span>
+                      <input
+                        type="time"
+                        value={dayEnd}
+                        onChange={(e) => setDayEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец</span>
-                    <input
-                      type="time"
-                      value={dayEnd}
-                      onChange={(e) => setDayEnd(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <input
+                        type="time"
+                        value={daySleepStart}
+                        onChange={(e) => setDaySleepStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <input
+                        type="time"
+                        value={daySleepEnd}
+                        onChange={(e) => setDaySleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Ночь */}
-                <div className="grid grid-cols-3 items-center gap-2">
-                  <span className="text-xs text-tg-text font-bold">Ночь (NIGHT)</span>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало</span>
-                    <input
-                      type="time"
-                      value={nightStart}
-                      onChange={(e) => setNightStart(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                <div className="space-y-2 pt-3 pb-3">
+                  <div className="text-xs text-tg-text font-bold">Ночь (NIGHT)</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало смены</span>
+                      <input
+                        type="time"
+                        value={nightStart}
+                        onChange={(e) => setNightStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец смены</span>
+                      <input
+                        type="time"
+                        value={nightEnd}
+                        onChange={(e) => setNightEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец</span>
-                    <input
-                      type="time"
-                      value={nightEnd}
-                      onChange={(e) => setNightEnd(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <input
+                        type="time"
+                        value={nightSleepStart}
+                        onChange={(e) => setNightSleepStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <input
+                        type="time"
+                        value={nightSleepEnd}
+                        onChange={(e) => setNightSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Отсыпной */}
-                <div className="grid grid-cols-3 items-center gap-2">
-                  <span className="text-xs text-tg-text font-bold">Отсыпной (SLEEP)</span>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало</span>
-                    <input
-                      type="time"
-                      value={sleepStart}
-                      onChange={(e) => setSleepStart(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                <div className="space-y-2 pt-3 pb-3">
+                  <div className="text-xs text-tg-text font-bold">Отсыпной (SLEEP)</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало смены</span>
+                      <input
+                        type="time"
+                        value={sleepStart}
+                        onChange={(e) => setSleepStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец смены</span>
+                      <input
+                        type="time"
+                        value={sleepEnd}
+                        onChange={(e) => setSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец</span>
-                    <input
-                      type="time"
-                      value={sleepEnd}
-                      onChange={(e) => setSleepEnd(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <input
+                        type="time"
+                        value={sleepSleepStart}
+                        onChange={(e) => setSleepSleepStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <input
+                        type="time"
+                        value={sleepSleepEnd}
+                        onChange={(e) => setSleepSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Выходной */}
-                <div className="grid grid-cols-3 items-center gap-2">
-                  <span className="text-xs text-tg-text font-bold">Выходной (OFF)</span>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало</span>
-                    <input
-                      type="time"
-                      value={offStart}
-                      onChange={(e) => setOffStart(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                <div className="space-y-2 pt-3">
+                  <div className="text-xs text-tg-text font-bold">Выходной (OFF)</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Начало смены</span>
+                      <input
+                        type="time"
+                        value={offStart}
+                        onChange={(e) => setOffStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец смены</span>
+                      <input
+                        type="time"
+                        value={offEnd}
+                        onChange={(e) => setOffEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[8px] text-tg-hint block uppercase font-semibold">Конец</span>
-                    <input
-                      type="time"
-                      value={offEnd}
-                      onChange={(e) => setOffEnd(e.target.value)}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
-                    />
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <input
+                        type="time"
+                        value={offSleepStart}
+                        onChange={(e) => setOffSleepStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <input
+                        type="time"
+                        value={offSleepEnd}
+                        onChange={(e) => setOffSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

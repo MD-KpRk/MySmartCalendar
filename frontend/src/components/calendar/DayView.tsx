@@ -98,6 +98,28 @@ export default function DayView({ currentDate, setCurrentDate }: DayViewProps) {
   const shiftMap = new Map(schedule?.days.map(d => [d.date, d]) || []);
   const dayShift = shiftMap.get(dateStr);
 
+  const getSleepBlocks = (startStr?: string, endStr?: string) => {
+    if (!startStr || !endStr) return [];
+    const [sH, sM] = startStr.split(':').map(Number);
+    const [eH, eM] = endStr.split(':').map(Number);
+    const startVal = sH + sM / 60;
+    const endVal = eH + eM / 60;
+    if (startVal === endVal) return [];
+
+    if (startVal < endVal) {
+      return [{ top: startVal, height: endVal - startVal }];
+    } else {
+      return [
+        { top: 0, height: endVal },
+        { top: startVal, height: 24 - startVal }
+      ];
+    }
+  };
+
+  const dayShiftType = dayShift?.shiftType || 'OFF';
+  const activeShiftRange = shiftTimes[dayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
+  const sleepBlocks = getSleepBlocks(activeShiftRange.sleepStart, activeShiftRange.sleepEnd);
+
   useEffect(() => {
     fetchMonthlySchedule(year, month);
     fetchTasks();
@@ -521,6 +543,26 @@ export default function DayView({ currentDate, setCurrentDate }: DayViewProps) {
         </div>
         <div className="h-96 overflow-y-auto divide-y divide-neutral-200 scrollbar-thin relative">
           {renderHourlyTimeline()}
+
+          {/* Отрисовка времени сна */}
+          {sleepBlocks.map((block, idx) => (
+            <div
+              key={`sleep-${idx}`}
+              className="absolute bg-neutral-100/65 border-y border-dashed border-neutral-350/30 pointer-events-none z-0 flex items-center justify-center overflow-hidden animate-fade-in"
+              style={{
+                left: '92px',
+                right: 0,
+                top: `${block.top * 56}px`,
+                height: `${block.height * 56}px`
+              }}
+            >
+              {block.height * 56 >= 22 && (
+                <span className="text-[9px] font-extrabold text-neutral-400 select-none">
+                  💤 Время сна
+                </span>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 

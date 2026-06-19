@@ -43,25 +43,37 @@ export interface CalendarEvent {
   allDay: boolean;
   color?: string | null;
   recurrence?: any;
-}
-
-export interface ShiftTimeRange {
+}export interface ShiftTimeRange {
   start: string;
   end: string;
+  sleepStart?: string;
+  sleepEnd?: string;
 }
 
 export type ShiftTimes = Record<'DAY' | 'NIGHT' | 'SLEEP' | 'OFF', ShiftTimeRange>;
 
-const DEFAULT_SHIFT_TIMES: ShiftTimes = {
-  DAY: { start: '08:00', end: '20:00' },
-  NIGHT: { start: '20:00', end: '08:00' },
-  SLEEP: { start: '00:00', end: '00:00' },
-  OFF: { start: '00:00', end: '00:00' },
+export const DEFAULT_SHIFT_TIMES: ShiftTimes = {
+  DAY: { start: '08:00', end: '20:00', sleepStart: '23:00', sleepEnd: '07:00' },
+  NIGHT: { start: '20:00', end: '08:00', sleepStart: '09:00', sleepEnd: '17:00' },
+  SLEEP: { start: '00:00', end: '00:00', sleepStart: '23:00', sleepEnd: '07:00' },
+  OFF: { start: '00:00', end: '00:00', sleepStart: '23:00', sleepEnd: '07:00' },
 };
 
 const savedShiftTimes = localStorage.getItem('shiftTimes');
-const initialShiftTimes: ShiftTimes = savedShiftTimes ? JSON.parse(savedShiftTimes) : DEFAULT_SHIFT_TIMES;
-
+let initialShiftTimes = DEFAULT_SHIFT_TIMES;
+if (savedShiftTimes) {
+  try {
+    const parsed = JSON.parse(savedShiftTimes);
+    initialShiftTimes = {
+      DAY: { ...DEFAULT_SHIFT_TIMES.DAY, ...parsed.DAY },
+      NIGHT: { ...DEFAULT_SHIFT_TIMES.NIGHT, ...parsed.NIGHT },
+      SLEEP: { ...DEFAULT_SHIFT_TIMES.SLEEP, ...parsed.SLEEP },
+      OFF: { ...DEFAULT_SHIFT_TIMES.OFF, ...parsed.OFF },
+    };
+  } catch (e) {
+    console.error('Error parsing shiftTimes:', e);
+  }
+}
 interface AppState {
   user: User | null;
   token: string | null;

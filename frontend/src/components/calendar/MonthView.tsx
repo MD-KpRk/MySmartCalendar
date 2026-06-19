@@ -24,10 +24,10 @@ import {
 import { ru } from 'date-fns/locale';
 
 export const SHIFT_TYPES = [
-  { type: 'DAY', label: 'День', color: 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100', icon: Sun },
-  { type: 'NIGHT', label: 'Ночь', color: 'bg-indigo-50 text-indigo-850 border-indigo-200 hover:bg-indigo-100', icon: Moon },
-  { type: 'SLEEP', label: 'Отсыпной', color: 'bg-purple-50 text-purple-850 border-purple-200 hover:bg-purple-100', icon: Sunrise },
-  { type: 'OFF', label: 'Выходной', color: 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100', icon: Coffee },
+  { type: 'DAY', label: 'День', color: 'bg-amber-100/80 text-amber-950 border-amber-300 hover:bg-amber-200', icon: Sun },
+  { type: 'NIGHT', label: 'Ночь', color: 'bg-indigo-100/80 text-indigo-950 border-indigo-300 hover:bg-indigo-200', icon: Moon },
+  { type: 'SLEEP', label: 'Отсыпной', color: 'bg-purple-100/80 text-purple-950 border-purple-300 hover:bg-purple-200', icon: Sunrise },
+  { type: 'OFF', label: 'Выходной', color: 'bg-emerald-100/80 text-emerald-950 border-emerald-300 hover:bg-emerald-200', icon: Coffee },
 ];
 
 interface MonthViewProps {

@@ -100,6 +100,24 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(start, i));
   const todayIndex = weekDays.findIndex(day => isToday(day));
 
+  const getSleepBlocks = (startStr?: string, endStr?: string) => {
+    if (!startStr || !endStr) return [];
+    const [sH, sM] = startStr.split(':').map(Number);
+    const [eH, eM] = endStr.split(':').map(Number);
+    const startVal = sH + sM / 60;
+    const endVal = eH + eM / 60;
+    if (startVal === endVal) return [];
+
+    if (startVal < endVal) {
+      return [{ top: startVal, height: endVal - startVal }];
+    } else {
+      return [
+        { top: 0, height: endVal },
+        { top: startVal, height: 24 - startVal }
+      ];
+    }
+  };
+
   useEffect(() => {
     if (gridContainerRef.current) {
       setTimeout(() => {
@@ -275,9 +293,9 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
         <div className="min-w-[820px] flex flex-col relative">
           
           {/* Sticky Header: Дни недели */}
-          <div className="flex sticky top-0 bg-white border-b border-neutral-200 z-30 select-none">
+          <div className="flex sticky top-0 bg-white border-b border-neutral-300 z-30 select-none">
             {/* Левый верхний угол */}
-            <div className="w-12 shrink-0 sticky left-0 bg-white z-40 border-r border-neutral-200 flex flex-col items-center justify-center py-2 text-[9px] text-tg-hint font-extrabold uppercase">
+            <div className="w-12 shrink-0 sticky left-0 bg-white z-40 border-r border-neutral-300 flex flex-col items-center justify-center py-2 text-[9px] text-tg-hint font-extrabold uppercase">
               Час
             </div>
             
@@ -295,7 +313,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                     handleDaySelect(day);
                     onSwitchToDay();
                   }}
-                  className={`flex-1 min-w-[110px] py-2 border-r border-neutral-200 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
+                  className={`flex-1 min-w-[110px] py-2 border-r border-neutral-300 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
                     isSelected ? 'bg-neutral-50/50' : 'hover:bg-neutral-50/30'
                   }`}
                 >
@@ -317,8 +335,8 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
           </div>
 
           {/* Row: Смена и заметка (All-day) */}
-          <div className="flex border-b border-neutral-200 bg-neutral-50/30">
-            <div className="w-12 shrink-0 sticky left-0 bg-neutral-50 z-20 border-r border-neutral-200 flex items-center justify-center text-[9px] font-black text-tg-hint uppercase py-2 select-none">
+          <div className="flex border-b border-neutral-300 bg-neutral-50/30">
+            <div className="w-12 shrink-0 sticky left-0 bg-neutral-50 z-20 border-r border-neutral-300 flex items-center justify-center text-[9px] font-black text-tg-hint uppercase py-2 select-none">
               Смены
             </div>
             {weekDays.map((day) => {
@@ -338,7 +356,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                 <div
                   key={`shift-${dateStr}`}
                   onClick={() => handleDaySelect(day)}
-                  className="flex-1 min-w-[110px] p-1.5 border-r border-neutral-200 flex flex-col justify-between text-[9px] min-h-[52px] bg-white hover:bg-neutral-50/30 cursor-pointer"
+                  className="flex-1 min-w-[110px] p-1.5 border-r border-neutral-300 flex flex-col justify-between text-[9px] min-h-[52px] bg-white hover:bg-neutral-50/30 cursor-pointer"
                 >
                   {shiftConfig ? (
                     <div className={`p-1.5 rounded border flex flex-col justify-center h-full transition-colors ${shiftConfig.color}`}>
@@ -366,11 +384,11 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
           <div className="flex relative" style={{ height: `${24 * rowHeight}px` }}>
             
             {/* Левая шкала времени (sticky) */}
-            <div className="w-12 shrink-0 sticky left-0 bg-white border-r border-neutral-200 z-20 flex flex-col select-none">
+            <div className="w-12 shrink-0 sticky left-0 bg-white border-r border-neutral-300 z-20 flex flex-col select-none">
               {Array.from({ length: 24 }).map((_, hour) => (
                 <div 
                   key={hour} 
-                  className="flex items-center justify-center text-[9px] font-extrabold text-tg-hint border-b border-neutral-100/50"
+                  className="flex items-center justify-center text-[9px] font-extrabold text-tg-hint border-b border-neutral-200"
                   style={{ height: `${rowHeight}px` }}
                 >
                   {hour}
@@ -400,10 +418,15 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
               // 3. События
               const dayEvents = getEventsForDay(day);
 
+              // Вычисляем время сна для смены этого дня
+              const dayShiftType = shift?.shiftType || 'OFF';
+              const activeShiftRange = shiftTimes[dayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
+              const daySleepBlocks = getSleepBlocks(activeShiftRange.sleepStart, activeShiftRange.sleepEnd);
+
               return (
                 <div 
                   key={dateStr}
-                  className="flex-1 min-w-[110px] border-r border-neutral-200 relative bg-white overflow-hidden"
+                  className="flex-1 min-w-[110px] border-r border-neutral-300 relative bg-white overflow-hidden"
                   style={{ height: `${24 * rowHeight}px` }}
                 >
                   {/* Горизонтальные линии сетки часов */}
@@ -411,15 +434,33 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                     <div 
                       key={hour} 
                       onClick={() => handleOpenCreateModal(day, hour)}
-                      className="absolute left-0 right-0 border-b border-neutral-100/55 hover:bg-neutral-50/20 cursor-pointer"
+                      className="absolute left-0 right-0 border-b border-neutral-200 hover:bg-neutral-50/20 cursor-pointer"
                       style={{ top: `${hour * rowHeight}px`, height: `${rowHeight}px` }}
                     />
+                  ))}
+
+                  {/* Отрисовка времени сна */}
+                  {daySleepBlocks.map((block, idx) => (
+                    <div
+                      key={`sleep-${idx}`}
+                      className="absolute left-0 right-0 bg-neutral-100/60 border-y border-dashed border-neutral-350/30 pointer-events-none z-0 flex items-center justify-center overflow-hidden"
+                      style={{
+                        top: `${block.top * rowHeight}px`,
+                        height: `${block.height * rowHeight}px`
+                      }}
+                    >
+                      {block.height * rowHeight >= 18 && (
+                        <span className="text-[8px] font-extrabold text-neutral-400 select-none">
+                          💤 Сон
+                        </span>
+                      )}
+                    </div>
                   ))}
 
                   {/* 4. Отрисовка области смены вчерашнего дня (окончание ночной смены) */}
                   {yShiftConfig && yShiftData && (
                     <div 
-                      className={`absolute left-0.5 right-0.5 rounded-b-md border-b border-x opacity-65 flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${yShiftConfig.color}`}
+                      className={`absolute left-0.5 right-0.5 rounded-b-md border-b border-x flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${yShiftConfig.color}`}
                       style={{ 
                         top: 0, 
                         height: `${(yShiftData.endHour + yShiftData.endMin / 60) * rowHeight}px` 
@@ -442,7 +483,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                       const heightVal = (eH - sH + (eM - sM) / 60) * rowHeight;
                       return (
                         <div 
-                          className={`absolute left-0.5 right-0.5 rounded-md border opacity-65 flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${shiftConfig.color}`}
+                          className={`absolute left-0.5 right-0.5 rounded-md border flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${shiftConfig.color}`}
                           style={{ top: `${topPos}px`, height: `${heightVal}px` }}
                         >
                           <span className="text-[7.5px] font-black tracking-wider uppercase truncate">
@@ -456,7 +497,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                       const heightVal = (24 - sH - sM / 60) * rowHeight;
                       return (
                         <div 
-                          className={`absolute left-0.5 right-0.5 rounded-t-md border-t border-x opacity-65 flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${shiftConfig.color}`}
+                          className={`absolute left-0.5 right-0.5 rounded-t-md border-t border-x flex flex-col justify-center px-1.5 z-0 select-none pointer-events-none ${shiftConfig.color}`}
                           style={{ top: `${topPos}px`, height: `${heightVal}px` }}
                         >
                           <span className="text-[7.5px] font-black tracking-wider uppercase truncate">
@@ -519,8 +560,8 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
           </div>
 
           {/* Row: Задачи внизу колонок */}
-          <div className="flex border-t border-neutral-200 bg-neutral-50/30">
-            <div className="w-12 shrink-0 sticky left-0 bg-neutral-50 z-20 border-r border-neutral-200 flex items-center justify-center text-[9px] font-black text-tg-hint uppercase py-3 select-none">
+          <div className="flex border-t border-neutral-300 bg-neutral-50/30">
+            <div className="w-12 shrink-0 sticky left-0 bg-neutral-50 z-20 border-r border-neutral-300 flex items-center justify-center text-[9px] font-black text-tg-hint uppercase py-3 select-none">
               Задачи
             </div>
             {weekDays.map((day) => {
@@ -530,7 +571,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
               return (
                 <div
                   key={`tasks-${dateStr}`}
-                  className="flex-1 min-w-[110px] p-2 border-r border-neutral-200 flex flex-col bg-white"
+                  className="flex-1 min-w-[110px] p-2 border-r border-neutral-300 flex flex-col bg-white"
                 >
                   {dayTasks.length > 0 ? (
                     <div className="space-y-1.5">
