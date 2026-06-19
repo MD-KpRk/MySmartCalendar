@@ -11,10 +11,10 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 const PRIORITY_COLORS = {
-  LOW: 'text-neutral-400 border-neutral-800 bg-neutral-900/40',
-  MEDIUM: 'text-sky-300 border-sky-500/20 bg-sky-950/20',
-  HIGH: 'text-amber-300 border-amber-500/20 bg-amber-950/20',
-  URGENT: 'text-rose-300 border-rose-500/20 bg-rose-950/20'
+  LOW: 'text-neutral-500 border-neutral-200 bg-neutral-100',
+  MEDIUM: 'text-sky-855 border-sky-200 bg-sky-50',
+  HIGH: 'text-amber-800 border-amber-200 bg-amber-50',
+  URGENT: 'text-rose-800 border-rose-200 bg-rose-50'
 };
 
 const PRIORITY_LABELS = {
@@ -68,7 +68,7 @@ export default function TasksTab() {
   return (
     <div className="space-y-4">
       {/* Форма создания задачи */}
-      <form onSubmit={handleSubmit} className="bg-tg-secondary-bg border border-neutral-900 rounded-xl p-3 space-y-3">
+      <form onSubmit={handleSubmit} className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-3 space-y-3">
         <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider">Новая задача</h3>
         
         <div className="flex gap-2">
@@ -78,11 +78,11 @@ export default function TasksTab() {
             placeholder="Что нужно сделать?"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
-            className="flex-1 bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+            className="flex-1 bg-white border border-neutral-200 rounded-lg px-3 py-2 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
           />
           <button
             type="submit"
-            className="px-3.5 bg-tg-primary text-tg-primary-text rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95 transition-all"
+            className="px-3.5 bg-tg-primary text-white rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95 transition-all"
           >
             <Plus size={16} />
           </button>
@@ -94,7 +94,7 @@ export default function TasksTab() {
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as any)}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+              className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
             >
               <option value="LOW">Низкий</option>
               <option value="MEDIUM">Средний</option>
@@ -109,7 +109,7 @@ export default function TasksTab() {
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+              className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
             />
           </div>
         </div>
@@ -124,13 +124,13 @@ export default function TasksTab() {
           <div className="space-y-2">
             <h4 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5">
               <span>В процессе</span>
-              <span className="bg-neutral-800 text-tg-text text-[10px] px-1.5 py-0.5 rounded-full">
+              <span className="bg-neutral-200 text-tg-text text-[10px] px-1.5 py-0.5 rounded-full">
                 {activeTasks.length}
               </span>
             </h4>
 
             {activeTasks.length === 0 ? (
-              <div className="text-center py-6 bg-tg-secondary-bg border border-neutral-900 rounded-xl text-tg-hint text-xs">
+              <div className="text-center py-6 bg-tg-secondary-bg border border-neutral-200 rounded-xl text-tg-hint text-xs">
                 Все задачи выполнены! Отличная работа 👍
               </div>
             ) : (
@@ -138,7 +138,7 @@ export default function TasksTab() {
                 {activeTasks.map((task) => (
                   <div 
                     key={task.id} 
-                    className="flex items-center justify-between p-3 bg-tg-secondary-bg border border-neutral-900 rounded-xl hover:border-neutral-800 transition-colors"
+                    className="flex items-center justify-between p-3 bg-tg-secondary-bg border border-neutral-200 rounded-xl hover:border-neutral-300 transition-colors"
                   >
                     <div className="flex items-start gap-2.5 flex-1 min-w-0">
                       <button 
@@ -184,7 +184,7 @@ export default function TasksTab() {
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5">
                 <span>Завершено</span>
-                <span className="bg-neutral-800 text-tg-text text-[10px] px-1.5 py-0.5 rounded-full">
+                <span className="bg-neutral-200 text-tg-text text-[10px] px-1.5 py-0.5 rounded-full">
                   {completedTasks.length}
                 </span>
               </h4>
@@ -193,7 +193,7 @@ export default function TasksTab() {
                 {completedTasks.map((task) => (
                   <div 
                     key={task.id} 
-                    className="flex items-center justify-between p-3 bg-tg-secondary-bg border border-neutral-900 rounded-xl"
+                    className="flex items-center justify-between p-3 bg-tg-secondary-bg border border-neutral-200 rounded-xl"
                   >
                     <div className="flex items-start gap-2.5 flex-1 min-w-0">
                       <button 

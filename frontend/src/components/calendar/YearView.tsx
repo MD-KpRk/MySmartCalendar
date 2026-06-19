@@ -62,15 +62,15 @@ export default function YearView({ currentDate, setCurrentDate, onSwitchToMonth 
       const isTodayDay = isToday(new Date(year, monthIdx, d));
 
       // Цвет для каждого типа смены
-      let colorClass = 'bg-neutral-950 text-neutral-500 border-neutral-900/40';
+      let colorClass = 'bg-neutral-50 text-neutral-400 border-neutral-100';
       if (dayShift?.shiftType === 'DAY') {
-        colorClass = 'bg-amber-500/25 text-amber-400 border-amber-500/20';
+        colorClass = 'bg-amber-50 text-amber-800 border-amber-200';
       } else if (dayShift?.shiftType === 'NIGHT') {
-        colorClass = 'bg-indigo-500/25 text-indigo-400 border-indigo-500/20';
+        colorClass = 'bg-indigo-50 text-indigo-850 border-indigo-200';
       } else if (dayShift?.shiftType === 'SLEEP') {
-        colorClass = 'bg-purple-500/25 text-purple-400 border-purple-500/20';
+        colorClass = 'bg-purple-50 text-purple-850 border-purple-200';
       } else if (dayShift?.shiftType === 'OFF') {
-        colorClass = 'bg-emerald-500/25 text-emerald-400 border-emerald-500/20';
+        colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
       }
 
       cells.push(
@@ -92,11 +92,11 @@ export default function YearView({ currentDate, setCurrentDate, onSwitchToMonth 
   const YearSkeleton = () => (
     <div className="grid grid-cols-3 gap-2.5 animate-pulse">
       {Array.from({ length: 12 }).map((_, i) => (
-        <div key={i} className="bg-tg-secondary-bg border border-neutral-900 rounded-xl p-2.5 h-[115px] flex flex-col justify-between">
-          <div className="h-3 bg-neutral-800 rounded w-1/2 mx-auto mb-2"></div>
+        <div key={i} className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-2.5 h-[115px] flex flex-col justify-between">
+          <div className="h-3 bg-neutral-200 rounded w-1/2 mx-auto mb-2"></div>
           <div className="grid grid-cols-7 gap-0.5">
             {Array.from({ length: 35 }).map((_, j) => (
-              <div key={j} className="aspect-square bg-neutral-900/50 rounded-sm"></div>
+              <div key={j} className="aspect-square bg-neutral-100 rounded-sm"></div>
             ))}
           </div>
         </div>
@@ -107,14 +107,14 @@ export default function YearView({ currentDate, setCurrentDate, onSwitchToMonth 
   return (
     <div className="space-y-4">
       {/* Шапка навигации по годам */}
-      <div className="flex items-center justify-between bg-tg-secondary-bg p-3 rounded-xl border border-neutral-900">
-        <button onClick={handlePrevYear} className="p-2 hover:bg-neutral-800 rounded-lg text-tg-hint hover:text-tg-text transition-colors">
+      <div className="flex items-center justify-between bg-tg-secondary-bg p-3 rounded-xl border border-neutral-200">
+        <button onClick={handlePrevYear} className="p-2 hover:bg-neutral-200 rounded-lg text-tg-hint hover:text-tg-text transition-colors">
           <ChevronLeft size={20} />
         </button>
         <span className="font-extrabold text-base">
           {year} год
         </span>
-        <button onClick={handleNextYear} className="p-2 hover:bg-neutral-800 rounded-lg text-tg-hint hover:text-tg-text transition-colors">
+        <button onClick={handleNextYear} className="p-2 hover:bg-neutral-200 rounded-lg text-tg-hint hover:text-tg-text transition-colors">
           <ChevronRight size={20} />
         </button>
       </div>
@@ -133,7 +133,7 @@ export default function YearView({ currentDate, setCurrentDate, onSwitchToMonth 
               <button
                 key={monthIdx}
                 onClick={() => handleMonthClick(monthIdx)}
-                className="bg-tg-secondary-bg border border-neutral-900 hover:border-neutral-800 rounded-xl p-2.5 flex flex-col justify-start text-left cursor-pointer transition-all hover:scale-[1.02] duration-200 active:scale-[0.98] outline-none focus:border-tg-primary/30"
+                className="bg-tg-secondary-bg border border-neutral-200 hover:border-neutral-300 rounded-xl p-2.5 flex flex-col justify-start text-left cursor-pointer transition-all hover:scale-[1.02] duration-200 active:scale-[0.98] outline-none focus:border-tg-primary/30"
               >
                 {/* Название месяца */}
                 <span className="text-[10px] font-extrabold text-center block w-full mb-1.5 text-tg-text">

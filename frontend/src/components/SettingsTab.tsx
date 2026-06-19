@@ -101,8 +101,8 @@ export default function SettingsTab() {
     <div className="space-y-4 pb-8">
       <form onSubmit={handleSave} className="space-y-4">
         {/* Блок: Базовый график */}
-        <div className="bg-tg-secondary-bg border border-neutral-900 rounded-xl p-4 space-y-4">
-          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-900 pb-2">
+        <div className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-4 space-y-4">
+          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-200 pb-2">
             <Calendar size={14} className="text-tg-primary" />
             <span>Базовый цикл смен</span>
           </h3>
@@ -112,7 +112,7 @@ export default function SettingsTab() {
               <label className="block text-[10px] text-tg-hint mb-1">Шаблон цикла смен:</label>
               <div className="grid grid-cols-4 gap-1.5">
                 {['DAY', 'NIGHT', 'SLEEP', 'OFF'].map((step, idx) => (
-                  <div key={idx} className="bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-center text-xs">
+                  <div key={idx} className="bg-white border border-neutral-200 rounded-lg p-2 text-center text-xs">
                     <span className="text-tg-hint text-[9px] block">День {idx + 1}</span>
                     <span className="font-semibold text-tg-text">
                       {step === 'DAY' && 'День'}
@@ -132,18 +132,18 @@ export default function SettingsTab() {
                 required
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
               />
             </div>
 
             {/* Временные диапазоны для смен */}
-            <div className="pt-3 border-t border-neutral-900 space-y-3">
+            <div className="pt-3 border-t border-neutral-200 space-y-3">
               <label className="block text-[10px] text-tg-hint font-bold uppercase tracking-wider flex items-center gap-1">
                 <Clock size={12} className="text-tg-primary" />
                 Диапазон времени для смен:
               </label>
 
-              <div className="space-y-3 bg-neutral-950/40 p-3 rounded-lg border border-neutral-900/60">
+              <div className="space-y-3 bg-white p-3 rounded-lg border border-neutral-200">
                 {/* День */}
                 <div className="grid grid-cols-3 items-center gap-2">
                   <span className="text-xs text-tg-text font-bold">День (DAY)</span>
@@ -153,7 +153,7 @@ export default function SettingsTab() {
                       type="time"
                       value={dayStart}
                       onChange={(e) => setDayStart(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                   <div>
@@ -162,7 +162,7 @@ export default function SettingsTab() {
                       type="time"
                       value={dayEnd}
                       onChange={(e) => setDayEnd(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                 </div>
@@ -176,7 +176,7 @@ export default function SettingsTab() {
                       type="time"
                       value={nightStart}
                       onChange={(e) => setNightStart(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                   <div>
@@ -185,7 +185,7 @@ export default function SettingsTab() {
                       type="time"
                       value={nightEnd}
                       onChange={(e) => setNightEnd(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export default function SettingsTab() {
                       type="time"
                       value={sleepStart}
                       onChange={(e) => setSleepStart(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                   <div>
@@ -208,7 +208,7 @@ export default function SettingsTab() {
                       type="time"
                       value={sleepEnd}
                       onChange={(e) => setSleepEnd(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export default function SettingsTab() {
                       type="time"
                       value={offStart}
                       onChange={(e) => setOffStart(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                   <div>
@@ -231,7 +231,7 @@ export default function SettingsTab() {
                       type="time"
                       value={offEnd}
                       onChange={(e) => setOffEnd(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                     />
                   </div>
                 </div>
@@ -241,8 +241,8 @@ export default function SettingsTab() {
         </div>
 
         {/* Блок: Уведомления */}
-        <div className="bg-tg-secondary-bg border border-neutral-900 rounded-xl p-4 space-y-3">
-          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-900 pb-2">
+        <div className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-4 space-y-3">
+          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-200 pb-2">
             <Bell size={14} className="text-tg-primary" />
             <span>Telegram уведомления</span>
           </h3>
@@ -267,7 +267,7 @@ export default function SettingsTab() {
                     required
                     value={dailySummaryTime}
                     onChange={(e) => setDailySummaryTime(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                    className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                   />
                 </div>
               </div>
@@ -276,8 +276,8 @@ export default function SettingsTab() {
         </div>
 
         {/* Блок: Локализация */}
-        <div className="bg-tg-secondary-bg border border-neutral-900 rounded-xl p-4 space-y-3">
-          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-900 pb-2">
+        <div className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-4 space-y-3">
+          <h3 className="text-xs font-bold text-tg-hint uppercase tracking-wider flex items-center gap-1.5 border-b border-neutral-200 pb-2">
             <Globe size={14} className="text-tg-primary" />
             <span>Локализация</span>
           </h3>
@@ -287,7 +287,7 @@ export default function SettingsTab() {
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+              className="w-full bg-white border border-neutral-200 rounded-lg px-2 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
             >
               <option value="Europe/Moscow">Москва (UTC+3)</option>
               <option value="Europe/Kaliningrad">Калининград (UTC+2)</option>
@@ -303,7 +303,7 @@ export default function SettingsTab() {
         <button
           type="submit"
           disabled={isSaving}
-          className="w-full py-2.5 bg-tg-primary text-tg-primary-text font-bold rounded-xl text-xs hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
+          className="w-full py-2.5 bg-tg-primary text-white font-bold rounded-xl text-xs hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
         >
           {saveSuccess ? (
             <>

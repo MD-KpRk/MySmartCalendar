@@ -37,8 +37,9 @@ export default function App() {
 
   // При первой загрузке проводим авторизацию на бэкенде
   useEffect(() => {
-    // Принудительно ставим темный класс для HTML
-    document.documentElement.classList.add('dark');
+    // Принудительно ставим светлый класс для HTML
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
 
     async function authorize() {
       if (initDataRaw) {
@@ -94,7 +95,7 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-tg-bg text-tg-text pb-20 select-none">
       {/* Шапка */}
-      <header className="sticky top-0 flex items-center justify-between px-4 py-3 border-b border-neutral-900 bg-tg-secondary-bg/80 backdrop-blur-md z-40">
+      <header className="sticky top-0 flex items-center justify-between px-4 py-3 border-b border-neutral-200 bg-white/80 backdrop-blur-md z-40">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-tg-primary flex items-center justify-center text-tg-primary-text font-bold text-sm shadow-md">
             {user ? user.firstName[0] : <UserIcon size={16} />}
@@ -120,7 +121,7 @@ export default function App() {
               <MessageSquare className="text-tg-primary" size={20} />
               AI Ассистент
             </h2>
-            <div className="p-6 text-center rounded-xl bg-tg-secondary-bg border border-neutral-900 space-y-2">
+            <div className="p-6 text-center rounded-xl bg-tg-secondary-bg border border-neutral-200 space-y-2">
               <p className="text-xs text-tg-text font-semibold">Искусственный интеллект (Gemini 2.0)</p>
               <p className="text-[11px] text-tg-hint leading-relaxed">
                 Интеграция ИИ-ассистента запланирована на Фазу 3. Вы сможете создавать события, задачи и анализировать свое рабочее расписание смен простым текстовым запросом.
@@ -133,7 +134,7 @@ export default function App() {
       </main>
 
       {/* Панель навигации (Таббар) */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 border-t border-neutral-900 bg-tg-secondary-bg/90 backdrop-blur-md flex items-center justify-around px-2 z-40 max-w-md mx-auto">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 border-t border-neutral-200 bg-white/95 backdrop-blur-md flex items-center justify-around px-2 z-40 max-w-md mx-auto">
         <button 
           onClick={() => setActiveTab('calendar')}
           className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg transition-colors ${

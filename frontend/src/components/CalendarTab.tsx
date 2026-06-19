@@ -20,11 +20,16 @@ export default function CalendarTab() {
   return (
     <div className="space-y-4">
       {/* Переключатель видов календаря (Segmented Control) */}
-      <div className="grid grid-cols-4 p-1 bg-neutral-950 border border-neutral-900 rounded-xl">
+      <div className="grid grid-cols-4 p-1 bg-neutral-100 border border-neutral-200 rounded-xl">
         {VIEWS.map((v) => (
           <button
             key={v.id}
-            onClick={() => setActiveView(v.id)}
+            onClick={() => {
+              if (v.id === 'day' || v.id === 'week') {
+                setCurrentDate(new Date());
+              }
+              setActiveView(v.id);
+            }}
             className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
               activeView === v.id
                 ? 'bg-tg-primary text-tg-primary-text shadow-sm'

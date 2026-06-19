@@ -24,10 +24,10 @@ import {
 import { ru } from 'date-fns/locale';
 
 export const SHIFT_TYPES = [
-  { type: 'DAY', label: 'День', color: 'bg-amber-950/40 text-amber-300 border-amber-500/30 hover:bg-amber-950/60', icon: Sun },
-  { type: 'NIGHT', label: 'Ночь', color: 'bg-indigo-950/40 text-indigo-300 border-indigo-500/30 hover:bg-indigo-950/60', icon: Moon },
-  { type: 'SLEEP', label: 'Отсыпной', color: 'bg-purple-950/40 text-purple-300 border-purple-500/30 hover:bg-purple-950/60', icon: Sunrise },
-  { type: 'OFF', label: 'Выходной', color: 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30 hover:bg-emerald-950/60', icon: Coffee },
+  { type: 'DAY', label: 'День', color: 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100', icon: Sun },
+  { type: 'NIGHT', label: 'Ночь', color: 'bg-indigo-50 text-indigo-850 border-indigo-200 hover:bg-indigo-100', icon: Moon },
+  { type: 'SLEEP', label: 'Отсыпной', color: 'bg-purple-50 text-purple-850 border-purple-200 hover:bg-purple-100', icon: Sunrise },
+  { type: 'OFF', label: 'Выходной', color: 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100', icon: Coffee },
 ];
 
 interface MonthViewProps {
@@ -120,7 +120,7 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
       // Находим стиль и иконку
       const shiftConfig = SHIFT_TYPES.find(t => t.type === dayShift?.shiftType) || {
         icon: null,
-        color: 'bg-neutral-900 text-neutral-400 border-neutral-800 hover:bg-neutral-800/50'
+        color: 'bg-neutral-50 text-neutral-550 border-neutral-100 hover:bg-neutral-100/50'
       };
       
       const IconComponent = shiftConfig.icon;
@@ -159,14 +159,14 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
   return (
     <div className="space-y-4">
       {/* Шапка Календаря */}
-      <div className="flex items-center justify-between bg-tg-secondary-bg p-3 rounded-xl border border-neutral-900">
-        <button onClick={handlePrevMonth} className="p-2 hover:bg-neutral-800 rounded-lg text-tg-hint hover:text-tg-text">
+      <div className="flex items-center justify-between bg-tg-secondary-bg p-3 rounded-xl border border-neutral-200">
+        <button onClick={handlePrevMonth} className="p-2 hover:bg-neutral-200 rounded-lg text-tg-hint hover:text-tg-text">
           <ChevronLeft size={20} />
         </button>
         <span className="font-bold capitalize text-base">
           {format(currentDate, 'LLLL yyyy', { locale: ru })}
         </span>
-        <button onClick={handleNextMonth} className="p-2 hover:bg-neutral-800 rounded-lg text-tg-hint hover:text-tg-text">
+        <button onClick={handleNextMonth} className="p-2 hover:bg-neutral-200 rounded-lg text-tg-hint hover:text-tg-text">
           <ChevronRight size={20} />
         </button>
       </div>
@@ -175,8 +175,8 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
       {schedule && (
         <div className={`flex items-center justify-between p-3 rounded-xl text-xs border ${
           schedule.confirmed 
-            ? 'bg-emerald-950/20 text-emerald-400 border-emerald-500/20' 
-            : 'bg-amber-950/20 text-amber-400 border-amber-500/20'
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+            : 'bg-amber-50 text-amber-805 border-amber-200'
         }`}>
           <div className="flex items-center gap-2">
             {schedule.confirmed ? <Check size={16} /> : <AlertCircle size={16} />}
@@ -185,7 +185,7 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
           {!schedule.confirmed && (
             <button 
               onClick={handleConfirmSchedule}
-              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold rounded-md transition-colors"
+              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-md transition-colors"
             >
               Подтвердить
             </button>
@@ -215,23 +215,11 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
         </div>
       )}
 
-      {/* Быстрая легенда смен */}
-      <div className="grid grid-cols-4 gap-2 bg-tg-secondary-bg p-2.5 rounded-xl border border-neutral-900 text-[10px]">
-        {SHIFT_TYPES.map(s => {
-          const Icon = s.icon;
-          return (
-            <div key={s.type} className="flex items-center gap-1 justify-center py-1 rounded bg-neutral-900/50">
-              <Icon size={12} className="text-tg-hint" />
-              <span className="text-tg-hint">{s.label}</span>
-            </div>
-          );
-        })}
-      </div>
 
       {/* Боковая панель деталей выбранного дня (BottomSheet) */}
       {selectedDateStr && (
-        <div className="bg-tg-secondary-bg border border-neutral-800 rounded-xl p-4 space-y-4 animate-accordion-down">
-          <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
+        <div className="bg-tg-secondary-bg border border-neutral-200 rounded-xl p-4 space-y-4 animate-accordion-down">
+          <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-sm text-tg-text">{formattedSelectedDate}</h3>
               <button
@@ -265,7 +253,7 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
                     className={`flex flex-col items-center gap-1 py-2 px-1 rounded-lg border text-xs font-semibold transition-all ${
                       isSelected
                         ? 'bg-tg-primary text-tg-primary-text border-tg-primary scale-95'
-                        : 'bg-neutral-900 border-neutral-800 text-tg-hint hover:text-tg-text'
+                        : 'bg-white border-neutral-200 text-tg-hint hover:text-tg-text hover:bg-neutral-50'
                     }`}
                   >
                     <Icon size={16} />
@@ -288,11 +276,11 @@ export default function MonthView({ currentDate, setCurrentDate, onSwitchToDay }
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
                 placeholder="Например: Смена 12ч, подработка..."
-                className="flex-1 bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                className="flex-1 bg-white border border-neutral-200 rounded-lg px-3 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
               />
               <button
                 onClick={handleSaveNote}
-                className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-tg-text rounded-lg text-xs font-semibold transition-colors"
+                className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 border border-neutral-250 text-tg-text rounded-lg text-xs font-semibold transition-colors"
               >
                 Сохранить
               </button>
