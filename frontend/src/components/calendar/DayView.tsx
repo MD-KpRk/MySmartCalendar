@@ -116,9 +116,101 @@ export default function DayView({ currentDate, setCurrentDate }: DayViewProps) {
     }
   };
 
+  const getCommuteBlocks = (
+    todayRange: any,
+    yesterdayRange: any
+  ) => {
+    const blocks: { top: number; height: number; label: string }[] = [];
+
+    const parseTimeToFloat = (t?: string) => {
+      if (!t) return null;
+      const [h, m] = t.split(':').map(Number);
+      return h + m / 60;
+    };
+
+    const isValidRange = (startStr?: string, endStr?: string) => {
+      if (!startStr || !endStr) return false;
+      if (startStr === '00:00' && endStr === '00:00') return false;
+      return startStr !== endStr;
+    };
+
+    // 1. Дорога на работу для сегодняшней смены
+    if (todayRange && isValidRange(todayRange.commuteToStart, todayRange.commuteToEnd)) {
+      const startVal = parseTimeToFloat(todayRange.commuteToStart);
+      const endVal = parseTimeToFloat(todayRange.commuteToEnd);
+      if (startVal !== null && endVal !== null) {
+        if (startVal < endVal) {
+          blocks.push({
+            top: startVal,
+            height: endVal - startVal,
+            label: 'Дорога на работу'
+          });
+        }
+      }
+    }
+
+    // 2. Дорога домой для сегодняшней смены (если это НЕ ночная/overnight смена)
+    if (todayRange && isValidRange(todayRange.commuteFromStart, todayRange.commuteFromEnd)) {
+      const sS = parseTimeToFloat(todayRange.start);
+      const sE = parseTimeToFloat(todayRange.end);
+      const isOvernight = sS !== null && sE !== null && sS > sE;
+      if (!isOvernight) {
+        const startVal = parseTimeToFloat(todayRange.commuteFromStart);
+        const endVal = parseTimeToFloat(todayRange.commuteFromEnd);
+        if (startVal !== null && endVal !== null) {
+          if (startVal < endVal) {
+            blocks.push({
+              top: startVal,
+              height: endVal - startVal,
+              label: 'Дорога домой'
+            });
+          }
+        }
+      }
+    }
+
+    // 3. Дорога домой для вчерашней смены (если вчерашняя смена была overnight)
+    if (yesterdayRange && isValidRange(yesterdayRange.commuteFromStart, yesterdayRange.commuteFromEnd)) {
+      const sS = parseTimeToFloat(yesterdayRange.start);
+      const sE = parseTimeToFloat(yesterdayRange.end);
+      const isOvernight = sS !== null && sE !== null && sS > sE;
+      if (isOvernight) {
+        const startVal = parseTimeToFloat(yesterdayRange.commuteFromStart);
+        const endVal = parseTimeToFloat(yesterdayRange.commuteFromEnd);
+        if (startVal !== null && endVal !== null) {
+          if (startVal < endVal) {
+            blocks.push({
+              top: startVal,
+              height: endVal - startVal,
+              label: 'Дорога домой'
+            });
+          }
+        }
+      }
+    }
+
+    return blocks;
+  };
+
   const dayShiftType = dayShift?.shiftType || 'OFF';
   const activeShiftRange = shiftTimes[dayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
   const sleepBlocks = getSleepBlocks(activeShiftRange.sleepStart, activeShiftRange.sleepEnd);
+
+  // Вчерашняя смена и её настройки для точного расчета дороги
+  const yesterday = subDays(currentDate, 1);
+  const yYear = yesterday.getFullYear();
+  const yMonth = yesterday.getMonth() + 1;
+  const yMonthKey = `${yYear}-${String(yMonth).padStart(2, '0')}`;
+  const ySchedule = schedules[yMonthKey];
+  const yShift = ySchedule?.days.find(d => d.date === yesterdayDateStr);
+  const yesterdayShiftType = yShift?.shiftType || 'OFF';
+  const yesterdayRange = shiftTimes[yesterdayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
+
+  const commuteBlocks = getCommuteBlocks(
+    activeShiftRange,
+    yesterdayRange
+  );
+
 
   useEffect(() => {
     fetchMonthlySchedule(year, month);
@@ -558,7 +650,27 @@ export default function DayView({ currentDate, setCurrentDate }: DayViewProps) {
             >
               {block.height * 56 >= 22 && (
                 <span className="text-[9px] font-extrabold text-neutral-400 select-none">
-                  💤 Время сна
+                  Время сна
+                </span>
+              )}
+            </div>
+          ))}
+
+          {/* Отрисовка времени в пути / дороги */}
+          {commuteBlocks.map((block, idx) => (
+            <div
+              key={`commute-${idx}`}
+              className="absolute bg-sky-50/65 border-y border-dashed border-sky-350/30 pointer-events-none z-0 flex items-center justify-center overflow-hidden animate-fade-in"
+              style={{
+                left: '92px',
+                right: 0,
+                top: `${block.top * 56}px`,
+                height: `${block.height * 56}px`
+              }}
+            >
+              {block.height * 56 >= 22 && (
+                <span className="text-[9px] font-extrabold text-sky-500 select-none">
+                  {block.label}
                 </span>
               )}
             </div>

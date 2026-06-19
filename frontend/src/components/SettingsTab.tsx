@@ -19,26 +19,42 @@ export default function SettingsTab() {
   const [pattern, setPattern] = useState<string[]>(['DAY', 'NIGHT', 'SLEEP', 'OFF']);
   const [startDate, setStartDate] = useState('');
   
-  // Времена смен и часы сна для каждой смены
+  // Времена смен, сон и дорога для каждой смены
   const [dayStart, setDayStart] = useState(shiftTimes.DAY.start);
   const [dayEnd, setDayEnd] = useState(shiftTimes.DAY.end);
   const [daySleepStart, setDaySleepStart] = useState(shiftTimes.DAY.sleepStart || '23:00');
   const [daySleepEnd, setDaySleepEnd] = useState(shiftTimes.DAY.sleepEnd || '07:00');
+  const [dayCommuteToStart, setDayCommuteToStart] = useState(shiftTimes.DAY.commuteToStart || '07:00');
+  const [dayCommuteToEnd, setDayCommuteToEnd] = useState(shiftTimes.DAY.commuteToEnd || '08:00');
+  const [dayCommuteFromStart, setDayCommuteFromStart] = useState(shiftTimes.DAY.commuteFromStart || '20:00');
+  const [dayCommuteFromEnd, setDayCommuteFromEnd] = useState(shiftTimes.DAY.commuteFromEnd || '21:00');
 
   const [nightStart, setNightStart] = useState(shiftTimes.NIGHT.start);
   const [nightEnd, setNightEnd] = useState(shiftTimes.NIGHT.end);
   const [nightSleepStart, setNightSleepStart] = useState(shiftTimes.NIGHT.sleepStart || '09:00');
   const [nightSleepEnd, setNightSleepEnd] = useState(shiftTimes.NIGHT.sleepEnd || '17:00');
+  const [nightCommuteToStart, setNightCommuteToStart] = useState(shiftTimes.NIGHT.commuteToStart || '19:00');
+  const [nightCommuteToEnd, setNightCommuteToEnd] = useState(shiftTimes.NIGHT.commuteToEnd || '20:00');
+  const [nightCommuteFromStart, setNightCommuteFromStart] = useState(shiftTimes.NIGHT.commuteFromStart || '08:00');
+  const [nightCommuteFromEnd, setNightCommuteFromEnd] = useState(shiftTimes.NIGHT.commuteFromEnd || '09:00');
 
   const [sleepStart, setSleepStart] = useState(shiftTimes.SLEEP.start);
   const [sleepEnd, setSleepEnd] = useState(shiftTimes.SLEEP.end);
   const [sleepSleepStart, setSleepSleepStart] = useState(shiftTimes.SLEEP.sleepStart || '23:00');
   const [sleepSleepEnd, setSleepSleepEnd] = useState(shiftTimes.SLEEP.sleepEnd || '07:00');
+  const [sleepCommuteToStart, setSleepCommuteToStart] = useState(shiftTimes.SLEEP.commuteToStart || '00:00');
+  const [sleepCommuteToEnd, setSleepCommuteToEnd] = useState(shiftTimes.SLEEP.commuteToEnd || '00:00');
+  const [sleepCommuteFromStart, setSleepCommuteFromStart] = useState(shiftTimes.SLEEP.commuteFromStart || '08:00');
+  const [sleepCommuteFromEnd, setSleepCommuteFromEnd] = useState(shiftTimes.SLEEP.commuteFromEnd || '09:00');
 
   const [offStart, setOffStart] = useState(shiftTimes.OFF.start);
   const [offEnd, setOffEnd] = useState(shiftTimes.OFF.end);
   const [offSleepStart, setOffSleepStart] = useState(shiftTimes.OFF.sleepStart || '23:00');
   const [offSleepEnd, setOffSleepEnd] = useState(shiftTimes.OFF.sleepEnd || '07:00');
+  const [offCommuteToStart, setOffCommuteToStart] = useState(shiftTimes.OFF.commuteToStart || '00:00');
+  const [offCommuteToEnd, setOffCommuteToEnd] = useState(shiftTimes.OFF.commuteToEnd || '00:00');
+  const [offCommuteFromStart, setOffCommuteFromStart] = useState(shiftTimes.OFF.commuteFromStart || '00:00');
+  const [offCommuteFromEnd, setOffCommuteFromEnd] = useState(shiftTimes.OFF.commuteFromEnd || '00:00');
 
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -68,21 +84,37 @@ export default function SettingsTab() {
     setDayEnd(shiftTimes.DAY.end);
     setDaySleepStart(shiftTimes.DAY.sleepStart || '23:00');
     setDaySleepEnd(shiftTimes.DAY.sleepEnd || '07:00');
+    setDayCommuteToStart(shiftTimes.DAY.commuteToStart || '07:00');
+    setDayCommuteToEnd(shiftTimes.DAY.commuteToEnd || '08:00');
+    setDayCommuteFromStart(shiftTimes.DAY.commuteFromStart || '20:00');
+    setDayCommuteFromEnd(shiftTimes.DAY.commuteFromEnd || '21:00');
 
     setNightStart(shiftTimes.NIGHT.start);
     setNightEnd(shiftTimes.NIGHT.end);
     setNightSleepStart(shiftTimes.NIGHT.sleepStart || '09:00');
     setNightSleepEnd(shiftTimes.NIGHT.sleepEnd || '17:00');
+    setNightCommuteToStart(shiftTimes.NIGHT.commuteToStart || '19:00');
+    setNightCommuteToEnd(shiftTimes.NIGHT.commuteToEnd || '20:00');
+    setNightCommuteFromStart(shiftTimes.NIGHT.commuteFromStart || '08:00');
+    setNightCommuteFromEnd(shiftTimes.NIGHT.commuteFromEnd || '09:00');
 
     setSleepStart(shiftTimes.SLEEP.start);
     setSleepEnd(shiftTimes.SLEEP.end);
     setSleepSleepStart(shiftTimes.SLEEP.sleepStart || '23:00');
     setSleepSleepEnd(shiftTimes.SLEEP.sleepEnd || '07:00');
+    setSleepCommuteToStart(shiftTimes.SLEEP.commuteToStart || '00:00');
+    setSleepCommuteToEnd(shiftTimes.SLEEP.commuteToEnd || '00:00');
+    setSleepCommuteFromStart(shiftTimes.SLEEP.commuteFromStart || '08:00');
+    setSleepCommuteFromEnd(shiftTimes.SLEEP.commuteFromEnd || '09:00');
 
     setOffStart(shiftTimes.OFF.start);
     setOffEnd(shiftTimes.OFF.end);
     setOffSleepStart(shiftTimes.OFF.sleepStart || '23:00');
     setOffSleepEnd(shiftTimes.OFF.sleepEnd || '07:00');
+    setOffCommuteToStart(shiftTimes.OFF.commuteToStart || '00:00');
+    setOffCommuteToEnd(shiftTimes.OFF.commuteToEnd || '00:00');
+    setOffCommuteFromStart(shiftTimes.OFF.commuteFromStart || '00:00');
+    setOffCommuteFromEnd(shiftTimes.OFF.commuteFromEnd || '00:00');
   }, [shiftTimes]);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -102,12 +134,32 @@ export default function SettingsTab() {
         startDate
       });
 
-      // Сохраняем временные диапазоны смен и их сон
+      // Сохраняем временные диапазоны смен, их сон и дорогу
       updateShiftTimes({
-        DAY: { start: dayStart, end: dayEnd, sleepStart: daySleepStart, sleepEnd: daySleepEnd },
-        NIGHT: { start: nightStart, end: nightEnd, sleepStart: nightSleepStart, sleepEnd: nightSleepEnd },
-        SLEEP: { start: sleepStart, end: sleepEnd, sleepStart: sleepSleepStart, sleepEnd: sleepSleepEnd },
-        OFF: { start: offStart, end: offEnd, sleepStart: offSleepStart, sleepEnd: offSleepEnd }
+        DAY: { 
+          start: dayStart, end: dayEnd, 
+          sleepStart: daySleepStart, sleepEnd: daySleepEnd,
+          commuteToStart: dayCommuteToStart, commuteToEnd: dayCommuteToEnd,
+          commuteFromStart: dayCommuteFromStart, commuteFromEnd: dayCommuteFromEnd
+        },
+        NIGHT: { 
+          start: nightStart, end: nightEnd, 
+          sleepStart: nightSleepStart, sleepEnd: nightSleepEnd,
+          commuteToStart: nightCommuteToStart, commuteToEnd: nightCommuteToEnd,
+          commuteFromStart: nightCommuteFromStart, commuteFromEnd: nightCommuteFromEnd
+        },
+        SLEEP: { 
+          start: sleepStart, end: sleepEnd, 
+          sleepStart: sleepSleepStart, sleepEnd: sleepSleepEnd,
+          commuteToStart: sleepCommuteToStart, commuteToEnd: sleepCommuteToEnd,
+          commuteFromStart: sleepCommuteFromStart, commuteFromEnd: sleepCommuteFromEnd
+        },
+        OFF: { 
+          start: offStart, end: offEnd, 
+          sleepStart: offSleepStart, sleepEnd: offSleepEnd,
+          commuteToStart: offCommuteToStart, commuteToEnd: offCommuteToEnd,
+          commuteFromStart: offCommuteFromStart, commuteFromEnd: offCommuteFromEnd
+        }
       });
 
       setSaveSuccess(true);
@@ -191,7 +243,7 @@ export default function SettingsTab() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Начало сна</span>
                       <input
                         type="time"
                         value={daySleepStart}
@@ -200,11 +252,49 @@ export default function SettingsTab() {
                       />
                     </div>
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Конец сна</span>
                       <input
                         type="time"
                         value={daySleepEnd}
                         onChange={(e) => setDaySleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-sky-500/30 bg-sky-50/10 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу с</span>
+                      <input
+                        type="time"
+                        value={dayCommuteToStart}
+                        onChange={(e) => setDayCommuteToStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу до</span>
+                      <input
+                        type="time"
+                        value={dayCommuteToEnd}
+                        onChange={(e) => setDayCommuteToEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой с</span>
+                      <input
+                        type="time"
+                        value={dayCommuteFromStart}
+                        onChange={(e) => setDayCommuteFromStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой до</span>
+                      <input
+                        type="time"
+                        value={dayCommuteFromEnd}
+                        onChange={(e) => setDayCommuteFromEnd(e.target.value)}
                         className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                       />
                     </div>
@@ -236,7 +326,7 @@ export default function SettingsTab() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Начало сна</span>
                       <input
                         type="time"
                         value={nightSleepStart}
@@ -245,11 +335,49 @@ export default function SettingsTab() {
                       />
                     </div>
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Конец сна</span>
                       <input
                         type="time"
                         value={nightSleepEnd}
                         onChange={(e) => setNightSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-sky-500/30 bg-sky-50/10 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу с</span>
+                      <input
+                        type="time"
+                        value={nightCommuteToStart}
+                        onChange={(e) => setNightCommuteToStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу до</span>
+                      <input
+                        type="time"
+                        value={nightCommuteToEnd}
+                        onChange={(e) => setNightCommuteToEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой с</span>
+                      <input
+                        type="time"
+                        value={nightCommuteFromStart}
+                        onChange={(e) => setNightCommuteFromStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой до</span>
+                      <input
+                        type="time"
+                        value={nightCommuteFromEnd}
+                        onChange={(e) => setNightCommuteFromEnd(e.target.value)}
                         className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                       />
                     </div>
@@ -281,7 +409,7 @@ export default function SettingsTab() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Начало сна</span>
                       <input
                         type="time"
                         value={sleepSleepStart}
@@ -290,11 +418,49 @@ export default function SettingsTab() {
                       />
                     </div>
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Конец сна</span>
                       <input
                         type="time"
                         value={sleepSleepEnd}
                         onChange={(e) => setSleepSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-sky-500/30 bg-sky-50/10 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу с</span>
+                      <input
+                        type="time"
+                        value={sleepCommuteToStart}
+                        onChange={(e) => setSleepCommuteToStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу до</span>
+                      <input
+                        type="time"
+                        value={sleepCommuteToEnd}
+                        onChange={(e) => setSleepCommuteToEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой с</span>
+                      <input
+                        type="time"
+                        value={sleepCommuteFromStart}
+                        onChange={(e) => setSleepCommuteFromStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой до</span>
+                      <input
+                        type="time"
+                        value={sleepCommuteFromEnd}
+                        onChange={(e) => setSleepCommuteFromEnd(e.target.value)}
                         className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                       />
                     </div>
@@ -326,7 +492,7 @@ export default function SettingsTab() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-tg-primary/30 bg-neutral-50/30 p-2 rounded-r-lg">
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Начало сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Начало сна</span>
                       <input
                         type="time"
                         value={offSleepStart}
@@ -335,11 +501,49 @@ export default function SettingsTab() {
                       />
                     </div>
                     <div>
-                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">💤 Конец сна</span>
+                      <span className="text-[8px] text-neutral-500 block uppercase font-bold">Конец сна</span>
                       <input
                         type="time"
                         value={offSleepEnd}
                         onChange={(e) => setOffSleepEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 pl-3 border-l-2 border-sky-500/30 bg-sky-50/10 p-2 rounded-r-lg">
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу с</span>
+                      <input
+                        type="time"
+                        value={offCommuteToStart}
+                        onChange={(e) => setOffCommuteToStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога на работу до</span>
+                      <input
+                        type="time"
+                        value={offCommuteToEnd}
+                        onChange={(e) => setOffCommuteToEnd(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой с</span>
+                      <input
+                        type="time"
+                        value={offCommuteFromStart}
+                        onChange={(e) => setOffCommuteFromStart(e.target.value)}
+                        className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[8px] text-sky-600 block uppercase font-bold">Дорога домой до</span>
+                      <input
+                        type="time"
+                        value={offCommuteFromEnd}
+                        onChange={(e) => setOffCommuteFromEnd(e.target.value)}
                         className="w-full bg-white border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs text-tg-text focus:outline-none focus:border-tg-primary"
                       />
                     </div>

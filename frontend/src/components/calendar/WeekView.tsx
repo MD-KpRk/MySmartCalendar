@@ -79,7 +79,7 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
 
   const weekNumber = getWeek(currentDate, { weekStartsOn: 1 });
 
-  const rowHeight = 30; // Высота строки (30px для более узких строк)
+  const rowHeight = 24; // Высота строки (24px для еще более узких строк)
 
   useEffect(() => {
     fetchMonthlySchedule(startYear, startMonth);
@@ -116,6 +116,82 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
         { top: startVal, height: 24 - startVal }
       ];
     }
+  };
+
+  const getCommuteBlocks = (
+    todayRange: any,
+    yesterdayRange: any
+  ) => {
+    const blocks: { top: number; height: number; label: string }[] = [];
+
+    const parseTimeToFloat = (t?: string) => {
+      if (!t) return null;
+      const [h, m] = t.split(':').map(Number);
+      return h + m / 60;
+    };
+
+    const isValidRange = (startStr?: string, endStr?: string) => {
+      if (!startStr || !endStr) return false;
+      if (startStr === '00:00' && endStr === '00:00') return false;
+      return startStr !== endStr;
+    };
+
+    // 1. Дорога на работу для сегодняшней смены
+    if (todayRange && isValidRange(todayRange.commuteToStart, todayRange.commuteToEnd)) {
+      const startVal = parseTimeToFloat(todayRange.commuteToStart);
+      const endVal = parseTimeToFloat(todayRange.commuteToEnd);
+      if (startVal !== null && endVal !== null) {
+        if (startVal < endVal) {
+          blocks.push({
+            top: startVal,
+            height: endVal - startVal,
+            label: 'Дорога на работу'
+          });
+        }
+      }
+    }
+
+    // 2. Дорога домой для сегодняшней смены (если это НЕ ночная/overnight смена)
+    if (todayRange && isValidRange(todayRange.commuteFromStart, todayRange.commuteFromEnd)) {
+      const sS = parseTimeToFloat(todayRange.start);
+      const sE = parseTimeToFloat(todayRange.end);
+      const isOvernight = sS !== null && sE !== null && sS > sE;
+      if (!isOvernight) {
+        const startVal = parseTimeToFloat(todayRange.commuteFromStart);
+        const endVal = parseTimeToFloat(todayRange.commuteFromEnd);
+        if (startVal !== null && endVal !== null) {
+          if (startVal < endVal) {
+            blocks.push({
+              top: startVal,
+              height: endVal - startVal,
+              label: 'Дорога домой'
+            });
+          }
+        }
+      }
+    }
+
+    // 3. Дорога домой для вчерашней смены (если вчерашняя смена была overnight)
+    if (yesterdayRange && isValidRange(yesterdayRange.commuteFromStart, yesterdayRange.commuteFromEnd)) {
+      const sS = parseTimeToFloat(yesterdayRange.start);
+      const sE = parseTimeToFloat(yesterdayRange.end);
+      const isOvernight = sS !== null && sE !== null && sS > sE;
+      if (isOvernight) {
+        const startVal = parseTimeToFloat(yesterdayRange.commuteFromStart);
+        const endVal = parseTimeToFloat(yesterdayRange.commuteFromEnd);
+        if (startVal !== null && endVal !== null) {
+          if (startVal < endVal) {
+            blocks.push({
+              top: startVal,
+              height: endVal - startVal,
+              label: 'Дорога домой'
+            });
+          }
+        }
+      }
+    }
+
+    return blocks;
   };
 
   useEffect(() => {
@@ -415,6 +491,17 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
               const yShiftData = getYesterdayOvernightShift(day);
               const yShiftConfig = yShiftData ? SHIFT_TYPES.find(t => t.type === yShiftData.shiftType) : null;
 
+              // Вчерашняя смена и её настройки для точного расчета дороги
+              const yesterday = subDays(day, 1);
+              const yYear = yesterday.getFullYear();
+              const yMonth = yesterday.getMonth() + 1;
+              const yMonthKey = `${yYear}-${String(yMonth).padStart(2, '0')}`;
+              const ySchedule = schedules[yMonthKey];
+              const yShiftDateStr = format(yesterday, 'yyyy-MM-dd');
+              const yShift = ySchedule?.days.find(d => d.date === yShiftDateStr);
+              const yesterdayShiftType = yShift?.shiftType || 'OFF';
+              const yesterdayRange = shiftTimes[yesterdayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
+
               // 3. События
               const dayEvents = getEventsForDay(day);
 
@@ -422,6 +509,11 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
               const dayShiftType = shift?.shiftType || 'OFF';
               const activeShiftRange = shiftTimes[dayShiftType as 'DAY' | 'NIGHT' | 'SLEEP' | 'OFF'] || shiftTimes.OFF;
               const daySleepBlocks = getSleepBlocks(activeShiftRange.sleepStart, activeShiftRange.sleepEnd);
+
+              const dayCommuteBlocks = getCommuteBlocks(
+                activeShiftRange,
+                yesterdayRange
+              );
 
               return (
                 <div 
@@ -451,7 +543,25 @@ export default function WeekView({ currentDate, setCurrentDate, onSwitchToDay }:
                     >
                       {block.height * rowHeight >= 18 && (
                         <span className="text-[8px] font-extrabold text-neutral-400 select-none">
-                          💤 Сон
+                          Сон
+                        </span>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Отрисовка времени в пути / дороги */}
+                  {dayCommuteBlocks.map((block, idx) => (
+                    <div
+                      key={`commute-${idx}`}
+                      className="absolute left-0 right-0 bg-sky-50/60 border-y border-dashed border-sky-300/30 pointer-events-none z-0 flex items-center justify-center overflow-hidden"
+                      style={{
+                        top: `${block.top * rowHeight}px`,
+                        height: `${block.height * rowHeight}px`
+                      }}
+                    >
+                      {block.height * rowHeight >= 16 && (
+                        <span className="text-[7.5px] font-extrabold text-sky-500 select-none">
+                          {block.label}
                         </span>
                       )}
                     </div>

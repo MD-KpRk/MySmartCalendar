@@ -48,15 +48,39 @@ export interface CalendarEvent {
   end: string;
   sleepStart?: string;
   sleepEnd?: string;
+  commuteToStart?: string;
+  commuteToEnd?: string;
+  commuteFromStart?: string;
+  commuteFromEnd?: string;
 }
 
 export type ShiftTimes = Record<'DAY' | 'NIGHT' | 'SLEEP' | 'OFF', ShiftTimeRange>;
 
 export const DEFAULT_SHIFT_TIMES: ShiftTimes = {
-  DAY: { start: '08:00', end: '20:00', sleepStart: '23:00', sleepEnd: '07:00' },
-  NIGHT: { start: '20:00', end: '08:00', sleepStart: '09:00', sleepEnd: '17:00' },
-  SLEEP: { start: '00:00', end: '00:00', sleepStart: '23:00', sleepEnd: '07:00' },
-  OFF: { start: '00:00', end: '00:00', sleepStart: '23:00', sleepEnd: '07:00' },
+  DAY: { 
+    start: '08:00', end: '20:00', 
+    sleepStart: '23:00', sleepEnd: '07:00',
+    commuteToStart: '07:00', commuteToEnd: '08:00',
+    commuteFromStart: '20:00', commuteFromEnd: '21:00'
+  },
+  NIGHT: { 
+    start: '20:00', end: '08:00', 
+    sleepStart: '09:00', sleepEnd: '17:00',
+    commuteToStart: '19:00', commuteToEnd: '20:00',
+    commuteFromStart: '08:00', commuteFromEnd: '09:00'
+  },
+  SLEEP: { 
+    start: '00:00', end: '00:00', 
+    sleepStart: '23:00', sleepEnd: '07:00',
+    commuteToStart: '00:00', commuteToEnd: '00:00',
+    commuteFromStart: '08:00', commuteFromEnd: '09:00'
+  },
+  OFF: { 
+    start: '00:00', end: '00:00', 
+    sleepStart: '23:00', sleepEnd: '07:00',
+    commuteToStart: '00:00', commuteToEnd: '00:00',
+    commuteFromStart: '00:00', commuteFromEnd: '00:00'
+  },
 };
 
 const savedShiftTimes = localStorage.getItem('shiftTimes');
